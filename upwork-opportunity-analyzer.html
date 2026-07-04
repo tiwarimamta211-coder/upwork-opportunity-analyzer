@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upwork Opportunity Analyzer Pro | IncomeAIHub</title>
+<meta name="description" content="Analyze Upwork job postings instantly - score client quality, budget fairness, competition level and get a data-backed Apply/Skip recommendation.">
+
+<!-- ============ ADSENSE PLACEHOLDER (HEAD) ============ -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --cyan:#00f0ff;
+  --purple:#a259ff;
+  --green:#39ff88;
+  --red:#ff3b5c;
+  --orange:#ffb02e;
+  --bg:#060812;
+  --panel:#0d1120;
+  --panel2:#10152a;
+  --border:rgba(0,240,255,0.25);
+  --text:#dbe6f5;
+  --text-dim:#7c8aa8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,240,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,0.06) 1px, transparent 1px);
+  background-size:38px 38px;
+  pointer-events:none;
+  z-index:0;
+}
+body::after{
+  content:"";
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, transparent 1px, transparent 3px);
+  pointer-events:none;
+  z-index:1;
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{0%{background-position-y:0}100%{background-position-y:100px}}
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:20px 16px 60px;}
+
+header{
+  text-align:center;
+  padding:28px 10px 20px;
+}
+header h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(22px,4.5vw,40px);
+  font-weight:900;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  letter-spacing:1px;
+  text-shadow:0 0 30px rgba(0,240,255,0.25);
+}
+header p{
+  color:var(--text-dim);
+  font-size:15px;
+  margin-top:8px;
+  letter-spacing:0.5px;
+}
+.badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.badge{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  padding:5px 12px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  color:var(--cyan);
+  background:rgba(0,240,255,0.05);
+}
+
+.ad-slot{
+  border:1px dashed rgba(124,138,168,0.3);
+  border-radius:10px;
+  text-align:center;
+  color:var(--text-dim);
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  padding:10px;
+  margin:20px 0;
+  background:rgba(255,255,255,0.015);
+}
+
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap;justify-content:center;}
+.tab-btn{
+  font-family:'Rajdhani',sans-serif;
+  font-weight:600;
+  font-size:15px;
+  padding:10px 20px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text-dim);
+  cursor:pointer;
+  transition:.2s;
+}
+.tab-btn.active{
+  background:linear-gradient(90deg,rgba(0,240,255,0.15),rgba(162,89,255,0.15));
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 14px rgba(0,240,255,0.15);
+}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.panel{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 0 25px rgba(0,0,0,0.35);
+}
+.panel h2{
+  font-family:'Orbitron',sans-serif;
+  font-size:16px;
+  color:var(--cyan);
+  margin-bottom:16px;
+  letter-spacing:0.5px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel h2 .num{
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(0,240,255,0.1);border:1px solid var(--cyan);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:680px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+.field{margin-bottom:14px;}
+.field label{
+  display:block;font-size:13px;color:var(--text-dim);
+  margin-bottom:6px;letter-spacing:0.3px;font-weight:600;
+}
+.field input[type=text],
+.field input[type=number],
+.field textarea,
+.field select{
+  width:100%;
+  background:#080b16;
+  border:1px solid rgba(124,138,168,0.25);
+  border-radius:8px;
+  padding:10px 12px;
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  font-size:15px;
+  outline:none;
+  transition:.2s;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 10px rgba(0,240,255,0.15);
+}
+.field textarea{resize:vertical;min-height:90px;}
+.hint{font-size:11px;color:var(--text-dim);margin-top:4px;}
+
+.toggle-row{display:flex;gap:10px;}
+.toggle-opt{
+  flex:1;text-align:center;padding:10px;border-radius:8px;
+  border:1px solid rgba(124,138,168,0.25);cursor:pointer;
+  font-weight:600;font-size:14px;color:var(--text-dim);
+  transition:.2s;
+}
+.toggle-opt.active{
+  border-color:var(--green);color:var(--green);
+  background:rgba(57,255,136,0.08);
+  box-shadow:0 0 10px rgba(57,255,136,0.15);
+}
+
+.btn{
+  font-family:'Orbitron',sans-serif;
+  font-weight:700;font-size:14px;
+  padding:14px 24px;border-radius:9px;border:none;
+  cursor:pointer;letter-spacing:0.5px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  color:#05060c;
+  transition:.2s;
+  width:100%;
+}
+.btn:hover{filter:brightness(1.12);box-shadow:0 0 18px rgba(0,240,255,0.3);}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);color:var(--cyan);
+}
+.btn-sm{padding:8px 16px;font-size:12px;width:auto;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-row .btn{flex:1;min-width:150px;}
+
+/* RESULTS */
+#resultsPanel{display:none;}
+.score-hero{
+  display:flex;align-items:center;gap:26px;flex-wrap:wrap;justify-content:center;
+  padding:10px 0 20px;
+}
+.ring-wrap{position:relative;width:180px;height:180px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(124,138,168,0.15);stroke-width:14;}
+.ring-fg{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1s ease, stroke .3s;}
+.ring-center{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring-center .score-num{font-family:'Orbitron',sans-serif;font-size:40px;font-weight:900;}
+.ring-center .score-lbl{font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-top:2px;}
+
+.reco-box{flex:1;min-width:220px;}
+.reco-tag{
+  display:inline-block;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;
+  padding:8px 16px;border-radius:20px;margin-bottom:10px;letter-spacing:0.5px;
+}
+.reco-desc{color:var(--text-dim);font-size:14px;line-height:1.5;}
+
+.subscores{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px;}
+@media(max-width:680px){.subscores{grid-template-columns:1fr 1fr;}}
+.sub-card{
+  background:#080b16;border:1px solid rgba(124,138,168,0.2);
+  border-radius:10px;padding:14px;text-align:center;
+}
+.sub-card .lbl{font-size:11px;color:var(--text-dim);letter-spacing:0.5px;margin-bottom:8px;}
+.sub-bar{height:6px;border-radius:4px;background:rgba(124,138,168,0.15);overflow:hidden;margin-bottom:6px;}
+.sub-bar-fill{height:100%;border-radius:4px;transition:width .8s ease;}
+.sub-card .val{font-family:'Share Tech Mono',monospace;font-size:15px;font-weight:700;}
+
+.flags-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+@media(max-width:680px){.flags-grid{grid-template-columns:1fr;}}
+.flag-col h3{font-size:13px;margin-bottom:10px;letter-spacing:0.5px;}
+.flag-col.green h3{color:var(--green);}
+.flag-col.red h3{color:var(--red);}
+.flag-item{
+  font-size:13px;padding:8px 10px;border-radius:7px;margin-bottom:7px;
+  display:flex;gap:8px;align-items:flex-start;
+}
+.flag-col.green .flag-item{background:rgba(57,255,136,0.06);border:1px solid rgba(57,255,136,0.2);}
+.flag-col.red .flag-item{background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.2);}
+.flag-item.empty{color:var(--text-dim);background:transparent;border:1px dashed rgba(124,138,168,0.2);}
+
+.bid-box{
+  margin-top:20px;background:#080b16;border:1px solid var(--border);
+  border-radius:10px;padding:16px;
+}
+.bid-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.bid-grid{grid-template-columns:1fr;}}
+.bid-item .lbl{font-size:11px;color:var(--text-dim);letter-spacing:0.5px;}
+.bid-item .val{font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--cyan);font-weight:700;margin-top:4px;}
+.bid-item .sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+
+/* DASHBOARD */
+.dash-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.dash-controls select,.dash-controls input{
+  background:#080b16;border:1px solid rgba(124,138,168,0.25);
+  color:var(--text);padding:8px 10px;border-radius:8px;font-family:'Rajdhani',sans-serif;
+}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{
+  text-align:left;color:var(--text-dim);font-size:11px;letter-spacing:0.5px;
+  padding:10px;border-bottom:1px solid var(--border);text-transform:uppercase;
+}
+tbody td{padding:12px 10px;border-bottom:1px solid rgba(124,138,168,0.12);}
+tbody tr:hover{background:rgba(0,240,255,0.03);}
+.score-pill{
+  font-family:'Share Tech Mono',monospace;font-weight:700;font-size:13px;
+  padding:3px 10px;border-radius:20px;display:inline-block;
+}
+.mini-btn{
+  background:transparent;border:1px solid rgba(124,138,168,0.3);color:var(--text-dim);
+  padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;margin-right:5px;
+}
+.mini-btn:hover{border-color:var(--red);color:var(--red);}
+.empty-state{text-align:center;padding:40px 10px;color:var(--text-dim);font-size:14px;}
+
+/* GUIDE */
+.guide-toggle{
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+}
+.guide-body{display:none;margin-top:16px;line-height:1.8;font-size:15px;}
+.guide-body.open{display:block;}
+.guide-body h3{color:var(--purple);font-size:15px;margin:16px 0 6px;font-family:'Orbitron',sans-serif;}
+.guide-body ul{padding-left:20px;margin-bottom:8px;}
+.guide-body li{margin-bottom:4px;}
+.chev{transition:.3s;color:var(--cyan);font-size:18px;}
+.chev.open{transform:rotate(180deg);}
+
+footer{text-align:center;color:var(--text-dim);font-size:12px;padding:30px 0 10px;}
+footer a{color:var(--cyan);text-decoration:none;}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel2);border:1px solid var(--cyan);color:var(--text);
+  padding:12px 22px;border-radius:9px;font-size:14px;z-index:999;
+  opacity:0;transition:.3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>⚡ UPWORK OPPORTUNITY ANALYZER PRO</h1>
+    <p>Score any Upwork job posting in seconds — Client Quality • Budget Fairness • Competition • Win Probability</p>
+    <div class="badge-row">
+      <span class="badge">🔒 100% Local — No Data Uploaded</span>
+      <span class="badge">🇮🇳 INR Ready</span>
+      <span class="badge">💾 Auto-Save Dashboard</span>
+    </div>
+  </header>
+
+  <!-- AD SLOT TOP -->
+  <div class="ad-slot">Advertisement
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="analyze">🔍 Analyze Job</button>
+    <button class="tab-btn" data-tab="dashboard">📊 Saved Opportunities</button>
+    <button class="tab-btn" data-tab="guide">📘 हिंदी गाइड</button>
+  </div>
+
+  <!-- ================= ANALYZE TAB ================= -->
+  <div class="tab-panel active" id="tab-analyze">
+
+    <div class="panel">
+      <h2><span class="num">1</span> Job Posting Details</h2>
+      <div class="field">
+        <label>Job Title</label>
+        <input type="text" id="jobTitle" placeholder="e.g. Shopify Store Setup + Product Upload">
+      </div>
+      <div class="field">
+        <label>Job Description</label>
+        <textarea id="jobDesc" placeholder="Paste the full job description here..."></textarea>
+        <div class="hint">Longer, specific descriptions score higher on clarity.</div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Budget Type</label>
+          <div class="toggle-row">
+            <div class="toggle-opt active" data-group="budgetType" data-val="fixed">Fixed Price</div>
+            <div class="toggle-opt" data-group="budgetType" data-val="hourly">Hourly</div>
+          </div>
+        </div>
+        <div class="field">
+          <label id="budgetLabel">Fixed Budget (USD $)</label>
+          <input type="number" id="budgetAmount" placeholder="e.g. 150" min="0">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Your Minimum Acceptable Rate (USD)</label>
+          <input type="number" id="minRate" placeholder="e.g. 20 (per hr) or 100 (fixed)" min="0">
+          <div class="hint">Used to check if this job's budget is worth your time.</div>
+        </div>
+        <div class="field">
+          <label>Connects Required to Apply</label>
+          <input type="number" id="connectsReq" placeholder="e.g. 6" min="0" value="6">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">2</span> Client Profile</h2>
+      <div class="grid3">
+        <div class="field">
+          <label>Client Rating (0–5 ⭐)</label>
+          <input type="number" id="clientRating" step="0.1" min="0" max="5" placeholder="e.g. 4.8">
+        </div>
+        <div class="field">
+          <label>Total Spend (USD)</label>
+          <input type="number" id="clientSpend" placeholder="e.g. 15000" min="0">
+        </div>
+        <div class="field">
+          <label>Hire Rate (%)</label>
+          <input type="number" id="hireRate" placeholder="e.g. 65" min="0" max="100">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Jobs Posted (Total)</label>
+          <input type="number" id="jobsPosted" placeholder="e.g. 22" min="0">
+        </div>
+        <div class="field">
+          <label>Payment Method Verified?</label>
+          <div class="toggle-row">
+            <div class="toggle-opt active" data-group="paymentVerified" data-val="yes">✅ Verified</div>
+            <div class="toggle-opt" data-group="paymentVerified" data-val="no">❌ Not Verified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">3</span> Competition</h2>
+      <div class="field">
+        <label>Number of Proposals Already Submitted</label>
+        <select id="proposalsRange">
+          <option value="3">Less than 5</option>
+          <option value="8" selected>5 to 10</option>
+          <option value="13">10 to 15</option>
+          <option value="18">15 to 20</option>
+          <option value="35">20 to 50</option>
+          <option value="60">50+</option>
+        </select>
+      </div>
+      <button class="btn" id="analyzeBtn">⚡ ANALYZE OPPORTUNITY</button>
+    </div>
+
+    <!-- ================= RESULTS ================= -->
+    <div class="panel" id="resultsPanel">
+      <h2><span class="num">✓</span> Analysis Result</h2>
+
+      <div class="score-hero">
+        <div class="ring-wrap">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle class="ring-bg" cx="90" cy="90" r="78"></circle>
+            <circle class="ring-fg" id="ringFg" cx="90" cy="90" r="78" stroke-dasharray="490" stroke-dashoffset="490"></circle>
+          </svg>
+          <div class="ring-center">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-lbl">OPPORTUNITY SCORE</div>
+          </div>
+        </div>
+        <div class="reco-box">
+          <div class="reco-tag" id="recoTag">—</div>
+          <div class="reco-desc" id="recoDesc">Fill the form and click analyze to see your recommendation.</div>
+        </div>
+      </div>
+
+      <div class="subscores">
+        <div class="sub-card">
+          <div class="lbl">CLIENT QUALITY</div>
+          <div class="sub-bar"><div class="sub-bar-fill" id="bar-client"></div></div>
+          <div class="val" id="val-client">0</div>
+        </div>
+        <div class="sub-card">
+          <div class="lbl">BUDGET FAIRNESS</div>
+          <div class="sub-bar"><div class="sub-bar-fill" id="bar-budget"></div></div>
+          <div class="val" id="val-budget">0</div>
+        </div>
+        <div class="sub-card">
+          <div class="lbl">COMPETITION</div>
+          <div class="sub-bar"><div class="sub-bar-fill" id="bar-comp"></div></div>
+          <div class="val" id="val-comp">0</div>
+        </div>
+        <div class="sub-card">
+          <div class="lbl">DESCRIPTION</div>
+          <div class="sub-bar"><div class="sub-bar-fill" id="bar-desc"></div></div>
+          <div class="val" id="val-desc">0</div>
+        </div>
+      </div>
+
+      <div class="flags-grid">
+        <div class="flag-col green">
+          <h3>✅ GREEN FLAGS</h3>
+          <div id="greenFlags"></div>
+        </div>
+        <div class="flag-col red">
+          <h3>🚩 RED FLAGS</h3>
+          <div id="redFlags"></div>
+        </div>
+      </div>
+
+      <div class="bid-box">
+        <div class="bid-grid">
+          <div class="bid-item">
+            <div class="lbl">SUGGESTED BID (USD)</div>
+            <div class="val" id="suggestedBid">$0</div>
+            <div class="sub" id="suggestedBidInr">≈ ₹0</div>
+          </div>
+          <div class="bid-item">
+            <div class="lbl">RECOMMENDED CONNECTS</div>
+            <div class="val" id="suggestedConnects">0</div>
+            <div class="sub">Based on competition & job value</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:20px;">
+        <button class="btn btn-outline" id="copyBtn">📋 Copy Summary</button>
+        <button class="btn" id="saveBtn">💾 Save to Dashboard</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= DASHBOARD TAB ================= -->
+  <div class="tab-panel" id="tab-dashboard">
+    <div class="panel">
+      <h2><span class="num">📊</span> Saved Opportunities</h2>
+      <div class="dash-controls">
+        <select id="sortSelect">
+          <option value="date_desc">Newest First</option>
+          <option value="date_asc">Oldest First</option>
+          <option value="score_desc">Highest Score</option>
+          <option value="score_asc">Lowest Score</option>
+        </select>
+        <select id="filterSelect">
+          <option value="all">All Recommendations</option>
+          <option value="strong">Strong Apply</option>
+          <option value="apply">Apply</option>
+          <option value="caution">Apply with Caution</option>
+          <option value="skip">Skip</option>
+        </select>
+        <input type="text" id="searchDash" placeholder="Search by job title...">
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr><th>Job Title</th><th>Score</th><th>Recommendation</th><th>Date</th><th>Action</th></tr>
+          </thead>
+          <tbody id="dashBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="dashEmpty" style="display:none;">No saved opportunities yet. Analyze a job and click "Save to Dashboard".</div>
+    </div>
+  </div>
+
+  <!-- ================= GUIDE TAB ================= -->
+  <div class="tab-panel" id="tab-guide">
+    <div class="panel">
+      <div class="guide-toggle" id="guideToggle">
+        <h2 style="margin-bottom:0;"><span class="num">📘</span> उपयोग गाइड (हिंदी में)</h2>
+        <span class="chev" id="guideChev">▼</span>
+      </div>
+      <div class="guide-body open" id="guideBody">
+        <p>Upwork Opportunity Analyzer Pro आपको किसी भी Upwork job posting पर <b>Apply करना चाहिए या नहीं</b> — यह सेकंडों में तय करने में मदद करता है।</p>
+
+        <h3>🔍 इसका उपयोग कैसे करें</h3>
+        <ul>
+          <li><b>Step 1:</b> Job posting का Title और पूरा Description कॉपी करके पेस्ट करें।</li>
+          <li><b>Step 2:</b> Budget Type चुनें (Fixed या Hourly) और Amount डालें।</li>
+          <li><b>Step 3:</b> अपनी Minimum Acceptable Rate डालें — यानि आप किस से कम में काम नहीं करेंगे।</li>
+          <li><b>Step 4:</b> Client Profile की जानकारी भरें — Rating, Total Spend, Hire Rate, Jobs Posted, Payment Verified।</li>
+          <li><b>Step 5:</b> Proposals की संख्या चुनें (कितने लोगों ने पहले ही apply किया है)।</li>
+          <li><b>Step 6:</b> "Analyze Opportunity" बटन दबाएं — आपको तुरंत Score, Recommendation, Red/Green Flags और Suggested Bid मिलेगा।</li>
+        </ul>
+
+        <h3>📊 Score का मतलब क्या है</h3>
+        <ul>
+          <li><b>75-100:</b> Strong Apply — यह एक बेहतरीन अवसर है, तुरंत apply करें।</li>
+          <li><b>55-74:</b> Apply — अच्छा मौका है, personalized proposal भेजें।</li>
+          <li><b>35-54:</b> Apply with Caution — रिस्क है, सोच समझकर आगे बढ़ें।</li>
+          <li><b>0-34:</b> Skip — इस पर समय और Connects खर्च न करें।</li>
+        </ul>
+
+        <h3>🚩 Red Flags और ✅ Green Flags</h3>
+        <p>Tool अपने आप Client के Profile और Job Description के आधार पर Warning signs (जैसे Payment Verify नहीं है, Rating कम है, Budget बहुत कम है) और Positive signs दिखाता है — ताकि आप बिना समय गंवाए सही फैसला ले सकें।</p>
+
+        <h3>💰 Suggested Bid कैसे काम करता है</h3>
+        <p>Tool आपके Minimum Rate, Job के Budget और Competition Level को देखकर एक Suggested Bid Amount (USD और लगभग INR में) और कितने Connects use करने चाहिए — यह सुझाता है।</p>
+
+        <h3>💾 Saved Opportunities Dashboard</h3>
+        <p>हर Analysis को "Save to Dashboard" बटन से Save करें। यह आपके Browser में ही (LocalStorage) सुरक्षित रहता है — कहीं भेजा नहीं जाता। आप बाद में Sort, Filter और Search कर सकते हैं कि किन Jobs पर Apply करना है।</p>
+
+        <h3>⚠️ ध्यान रखें</h3>
+        <ul>
+          <li>यह Tool एक Guide है, अंतिम फैसला हमेशा अपनी समझ और experience से ही लें।</li>
+          <li>USD to INR conversion एक approximate rate पर आधारित है, live rate नहीं है।</li>
+          <li>सभी Data आपके अपने Browser में Local रूप से Save होता है, कोई Server पर नहीं जाता।</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD SLOT BOTTOM -->
+  <div class="ad-slot">Advertisement
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+
+  <footer>
+    Built with ⚡ by <a href="#">IncomeAIHub</a> — All analysis runs locally in your browser. No data is uploaded.
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const USD_INR = 83.5; // approximate, informational only
+
+  // ---------- TABS ----------
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+      if(btn.dataset.tab==='dashboard') renderDashboard();
+    });
+  });
+
+  // ---------- TOGGLES ----------
+  document.querySelectorAll('.toggle-opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      const group = opt.dataset.group;
+      document.querySelectorAll(`.toggle-opt[data-group="${group}"]`).forEach(o=>o.classList.remove('active'));
+      opt.classList.add('active');
+      if(group==='budgetType'){
+        const label = document.getElementById('budgetLabel');
+        label.textContent = opt.dataset.val==='fixed' ? 'Fixed Budget (USD $)' : 'Hourly Rate Offered (USD $/hr)';
+      }
+    });
+  });
+
+  function getToggleVal(group){
+    const el = document.querySelector(`.toggle-opt[data-group="${group}"].active`);
+    return el ? el.dataset.val : null;
+  }
+
+  // ---------- GUIDE ACCORDION ----------
+  document.getElementById('guideToggle').addEventListener('click',()=>{
+    document.getElementById('guideBody').classList.toggle('open');
+    document.getElementById('guideChev').classList.toggle('open');
+  });
+
+  // ---------- TOAST ----------
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  // ---------- ANALYSIS ENGINE ----------
+  let lastResult = null;
+
+  document.getElementById('analyzeBtn').addEventListener('click', ()=>{
+    const title = document.getElementById('jobTitle').value.trim() || 'Untitled Job';
+    const desc = document.getElementById('jobDesc').value.trim();
+    const budgetType = getToggleVal('budgetType');
+    const budgetAmount = parseFloat(document.getElementById('budgetAmount').value) || 0;
+    const minRate = parseFloat(document.getElementById('minRate').value) || 0;
+    const connectsReq = parseInt(document.getElementById('connectsReq').value) || 6;
+
+    const clientRating = parseFloat(document.getElementById('clientRating').value);
+    const clientSpend = parseFloat(document.getElementById('clientSpend').value) || 0;
+    const hireRate = parseFloat(document.getElementById('hireRate').value);
+    const jobsPosted = parseInt(document.getElementById('jobsPosted').value) || 0;
+    const paymentVerified = getToggleVal('paymentVerified') === 'yes';
+    const proposals = parseInt(document.getElementById('proposalsRange').value);
+
+    if(!budgetAmount){
+      showToast('⚠️ Please enter the budget amount');
+      return;
+    }
+
+    // ---- CLIENT SCORE (0-100) ----
+    let clientScore = 0;
+    clientScore += paymentVerified ? 28 : 0;
+    const ratingVal = isNaN(clientRating) ? 3 : clientRating;
+    clientScore += Math.min(ratingVal/5,1) * 27;
+    let spendScore = 0;
+    if(clientSpend >= 50000) spendScore = 25;
+    else if(clientSpend >= 10000) spendScore = 20;
+    else if(clientSpend >= 1000) spendScore = 12;
+    else if(clientSpend > 0) spendScore = 6;
+    clientScore += spendScore;
+    const hireVal = isNaN(hireRate) ? 40 : hireRate;
+    clientScore += Math.min(hireVal/100,1) * 20;
+    clientScore = Math.round(Math.min(clientScore,100));
+
+    // ---- BUDGET SCORE (0-100) ----
+    let budgetScore = 50;
+    if(minRate > 0){
+      const ratio = budgetAmount / minRate;
+      if(ratio >= 1.5) budgetScore = 100;
+      else if(ratio >= 1.1) budgetScore = 85;
+      else if(ratio >= 0.9) budgetScore = 65;
+      else if(ratio >= 0.6) budgetScore = 35;
+      else budgetScore = 15;
+    } else {
+      budgetScore = budgetAmount > 0 ? 60 : 20;
+    }
+    budgetScore = Math.round(budgetScore);
+
+    // ---- COMPETITION SCORE (0-100) ----
+    let compScore = 100;
+    if(proposals <= 3) compScore = 100;
+    else if(proposals <= 8) compScore = 80;
+    else if(proposals <= 13) compScore = 60;
+    else if(proposals <= 18) compScore = 45;
+    else if(proposals <= 35) compScore = 25;
+    else compScore = 10;
+
+    // ---- DESCRIPTION SCORE (0-100) ----
+    const wordCount = desc.split(/\s+/).filter(Boolean).length;
+    let descScore = 0;
+    if(wordCount >= 120) descScore = 90;
+    else if(wordCount >= 60) descScore = 70;
+    else if(wordCount >= 25) descScore = 45;
+    else if(wordCount > 0) descScore = 20;
+    else descScore = 10;
+    const vagueWords = ['easy job','quick task','no experience needed','simple work','asap','urgent!!!'];
+    const lowerDesc = desc.toLowerCase();
+    let vagueHit = false;
+    vagueWords.forEach(w=>{ if(lowerDesc.includes(w)) vagueHit = true; });
+    if(vagueHit) descScore = Math.max(descScore - 20, 5);
+    descScore = Math.round(descScore);
+
+    // ---- OVERALL WEIGHTED SCORE ----
+    const overall = Math.round(
+      clientScore*0.35 + budgetScore*0.30 + compScore*0.20 + descScore*0.15
+    );
+
+    // ---- RED / GREEN FLAGS ----
+    const green = [], red = [];
+    if(paymentVerified) green.push('Payment method verified'); else red.push('Payment method NOT verified — high risk of non-payment');
+    if(ratingVal >= 4.5) green.push(`Excellent client rating (${ratingVal}★)`);
+    else if(ratingVal < 3.5 && !isNaN(clientRating)) red.push(`Low client rating (${ratingVal}★)`);
+    if(clientSpend >= 10000) green.push(`Strong spending history ($${clientSpend.toLocaleString()})`);
+    if(clientSpend === 0 && jobsPosted <= 1) red.push('New client with no spending history — proceed carefully');
+    if(!isNaN(hireRate)){
+      if(hireVal >= 60) green.push(`High hire rate (${hireVal}%) — client actually hires`);
+      else if(hireVal < 20) red.push(`Very low hire rate (${hireVal}%) — may just be browsing`);
+    }
+    if(proposals <= 8) green.push('Low competition — few proposals submitted so far');
+    else if(proposals >= 35) red.push('Very high competition — 30+ proposals already submitted');
+    if(wordCount >= 80) green.push('Clear, detailed job description');
+    else if(wordCount < 25) red.push('Vague or very short job description');
+    if(vagueHit) red.push('Description contains vague/low-value phrasing');
+    if(minRate > 0 && budgetAmount < minRate*0.7) red.push('Budget is significantly below your minimum acceptable rate');
+    if(minRate > 0 && budgetAmount >= minRate*1.3) green.push('Budget comfortably exceeds your minimum rate');
+
+    // ---- RECOMMENDATION ----
+    let recoKey, recoText, recoColor, recoDesc;
+    if(overall >= 75){
+      recoKey='strong'; recoText='🚀 STRONG APPLY'; recoColor='var(--green)';
+      recoDesc='Excellent opportunity — verified, well-rated client with a fair budget and low competition. Apply immediately with a tailored proposal.';
+    } else if(overall >= 55){
+      recoKey='apply'; recoText='✅ APPLY';
+      recoColor='var(--cyan)';
+      recoDesc='Solid opportunity worth pursuing. Write a personalized proposal highlighting relevant experience to stand out.';
+    } else if(overall >= 35){
+      recoKey='caution'; recoText='⚠️ APPLY WITH CAUTION';
+      recoColor='var(--orange)';
+      recoDesc='Mixed signals here. Review the red flags carefully — only apply if you have spare connects and the project genuinely interests you.';
+    } else {
+      recoKey='skip'; recoText='⛔ SKIP THIS JOB';
+      recoColor='var(--red)';
+      recoDesc='Too many risk factors — low budget fit, weak client signals, or heavy competition. Save your connects for a better opportunity.';
+    }
+
+    // ---- SUGGESTED BID ----
+    let suggestedBidVal;
+    if(budgetType === 'fixed'){
+      if(compScore >= 80) suggestedBidVal = budgetAmount * 0.98;
+      else if(compScore >= 45) suggestedBidVal = budgetAmount * 0.93;
+      else suggestedBidVal = budgetAmount * 0.88;
+    } else {
+      const base = minRate > 0 ? Math.max(minRate, budgetAmount*0.9) : budgetAmount*0.95;
+      suggestedBidVal = base;
+    }
+    suggestedBidVal = Math.round(suggestedBidVal);
+
+    let suggestedConnectsVal = connectsReq;
+    if(compScore < 45) suggestedConnectsVal = connectsReq * 2;
+    else if(overall >= 75) suggestedConnectsVal = connectsReq + Math.ceil(connectsReq*0.5);
+
+    lastResult = {
+      title, budgetType, budgetAmount, overall, clientScore, budgetScore, compScore, descScore,
+      recoKey, recoText, green, red, suggestedBidVal, suggestedConnectsVal, date: new Date().toISOString()
+    };
+
+    renderResults(lastResult, recoColor, recoText, recoDesc);
+  });
+
+  function scoreColor(v){
+    if(v>=75) return 'var(--green)';
+    if(v>=55) return 'var(--cyan)';
+    if(v>=35) return 'var(--orange)';
+    return 'var(--red)';
+  }
+
+  function renderResults(r, recoColor, recoText, recoDesc){
+    document.getElementById('resultsPanel').style.display = 'block';
+    document.getElementById('resultsPanel').scrollIntoView({behavior:'smooth', block:'start'});
+
+    // Ring
+    const circumference = 2*Math.PI*78;
+    const ring = document.getElementById('ringFg');
+    ring.setAttribute('stroke-dasharray', circumference);
+    const offset = circumference - (r.overall/100)*circumference;
+    const col = scoreColor(r.overall);
+    setTimeout(()=>{
+      ring.style.stroke = col;
+      ring.style.strokeDashoffset = offset;
+    }, 50);
+    document.getElementById('scoreNum').textContent = r.overall;
+    document.getElementById('scoreNum').style.color = col;
+
+    document.getElementById('recoTag').textContent = recoText;
+    document.getElementById('recoTag').style.background = 'rgba(0,0,0,0.3)';
+    document.getElementById('recoTag').style.color = recoColor;
+    document.getElementById('recoTag').style.border = `1px solid ${recoColor}`;
+    document.getElementById('recoDesc').textContent = recoDesc;
+
+    // Subscores
+    setSub('client', r.clientScore);
+    setSub('budget', r.budgetScore);
+    setSub('comp', r.compScore);
+    setSub('desc', r.descScore);
+
+    // Flags
+    const greenEl = document.getElementById('greenFlags');
+    const redEl = document.getElementById('redFlags');
+    greenEl.innerHTML = r.green.length ? r.green.map(f=>`<div class="flag-item">✅ ${f}</div>`).join('') : '<div class="flag-item empty">No standout positives detected</div>';
+    redEl.innerHTML = r.red.length ? r.red.map(f=>`<div class="flag-item">🚩 ${f}</div>`).join('') : '<div class="flag-item empty">No red flags detected 🎉</div>';
+
+    // Bid
+    document.getElementById('suggestedBid').textContent = '$' + r.suggestedBidVal.toLocaleString() + (r.budgetType==='hourly' ? '/hr' : '');
+    document.getElementById('suggestedBidInr').textContent = '≈ ₹' + Math.round(r.suggestedBidVal*USD_INR).toLocaleString('en-IN') + (r.budgetType==='hourly' ? '/hr' : '');
+    document.getElementById('suggestedConnects').textContent = r.suggestedConnectsVal;
+  }
+
+  function setSub(key, val){
+    document.getElementById('val-'+key).textContent = val;
+    const bar = document.getElementById('bar-'+key);
+    const col = scoreColor(val);
+    setTimeout(()=>{
+      bar.style.width = val + '%';
+      bar.style.background = col;
+    }, 80);
+  }
+
+  // ---------- COPY SUMMARY ----------
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    if(!lastResult){ showToast('⚠️ Analyze a job first'); return; }
+    const r = lastResult;
+    const text =
+`UPWORK OPPORTUNITY ANALYSIS
+Job: ${r.title}
+Overall Score: ${r.overall}/100
+Recommendation: ${r.recoText}
+
+Client Quality: ${r.clientScore}/100
+Budget Fairness: ${r.budgetScore}/100
+Competition: ${r.compScore}/100
+Description Quality: ${r.descScore}/100
+
+Suggested Bid: $${r.suggestedBidVal}${r.budgetType==='hourly'?'/hr':''} (≈ ₹${Math.round(r.suggestedBidVal*USD_INR).toLocaleString('en-IN')})
+Suggested Connects: ${r.suggestedConnectsVal}
+
+Green Flags:
+${r.green.map(f=>'+ '+f).join('\\n') || '- none'}
+
+Red Flags:
+${r.red.map(f=>'- '+f).join('\\n') || '- none'}
+
+Generated by IncomeAIHub Upwork Opportunity Analyzer Pro`;
+    navigator.clipboard.writeText(text).then(()=>showToast('✅ Summary copied to clipboard'));
+  });
+
+  // ---------- SAVE TO DASHBOARD ----------
+  document.getElementById('saveBtn').addEventListener('click', ()=>{
+    if(!lastResult){ showToast('⚠️ Analyze a job first'); return; }
+    const data = JSON.parse(localStorage.getItem('uoa_saved') || '[]');
+    data.push(lastResult);
+    localStorage.setItem('uoa_saved', JSON.stringify(data));
+    showToast('💾 Saved to Dashboard');
+  });
+
+  // ---------- DASHBOARD ----------
+  function getSaved(){
+    return JSON.parse(localStorage.getItem('uoa_saved') || '[]');
+  }
+
+  function recoColorFor(key){
+    if(key==='strong') return 'var(--green)';
+    if(key==='apply') return 'var(--cyan)';
+    if(key==='caution') return 'var(--orange)';
+    return 'var(--red)';
+  }
+
+  function renderDashboard(){
+    let data = getSaved();
+    const sortVal = document.getElementById('sortSelect').value;
+    const filterVal = document.getElementById('filterSelect').value;
+    const searchVal = document.getElementById('searchDash').value.toLowerCase();
+
+    if(filterVal !== 'all') data = data.filter(d=>d.recoKey===filterVal);
+    if(searchVal) data = data.filter(d=>d.title.toLowerCase().includes(searchVal));
+
+    data = data.slice().map((d,i)=>({...d, _idx:i}));
+    const original = getSaved();
+    // re-map true index for deletion by matching date+title (unique enough)
+    data.forEach(d=>{
+      d._trueIdx = original.findIndex(o=>o.date===d.date && o.title===d.title);
+    });
+
+    if(sortVal==='date_desc') data.sort((a,b)=> new Date(b.date)-new Date(a.date));
+    if(sortVal==='date_asc') data.sort((a,b)=> new Date(a.date)-new Date(b.date));
+    if(sortVal==='score_desc') data.sort((a,b)=> b.overall-a.overall);
+    if(sortVal==='score_asc') data.sort((a,b)=> a.overall-b.overall);
+
+    const body = document.getElementById('dashBody');
+    const empty = document.getElementById('dashEmpty');
+
+    if(data.length===0){
+      body.innerHTML='';
+      empty.style.display='block';
+      return;
+    }
+    empty.style.display='none';
+
+    body.innerHTML = data.map(d=>{
+      const col = recoColorFor(d.recoKey);
+      const dt = new Date(d.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+      return `<tr>
+        <td>${escapeHtml(d.title)}</td>
+        <td><span class="score-pill" style="background:rgba(0,0,0,0.3);color:${col};border:1px solid ${col};">${d.overall}</span></td>
+        <td style="color:${col};font-weight:600;">${d.recoText}</td>
+        <td>${dt}</td>
+        <td><button class="mini-btn" onclick="window._uoaDelete(${d._trueIdx})">🗑 Delete</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  window._uoaDelete = function(idx){
+    const data = getSaved();
+    data.splice(idx,1);
+    localStorage.setItem('uoa_saved', JSON.stringify(data));
+    renderDashboard();
+    showToast('🗑 Deleted');
+  };
+
+  ['sortSelect','filterSelect'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', renderDashboard);
+  });
+  document.getElementById('searchDash').addEventListener('input', renderDashboard);
+
+})();
+</script>
+</body>
+</html>
